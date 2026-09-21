@@ -1,0 +1,2897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>HireTrack | Career Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+:root{
+--bg:#f5fbf7;
+--white:#fff;
+--text:#17372b;
+--muted:#789187;
+--line:#deeee5;
+--mint:#dff9eb;
+--mint2:#bdf2d2;
+--lime:#c9e99d;
+--aqua:#8de3c1;
+--green:#20b978;
+--emerald:#079669;
+--forest:#056b50;
+--red:#ef476f;
+--orange:#e7a321;
+--blue:#4196e1;
+--shadow:0 14px 38px rgba(24,95,65,.08);
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+min-height:100vh;
+color:var(--text);
+background:
+radial-gradient(circle at 5% 5%,#bdf2d255,transparent 23%),
+radial-gradient(circle at 95% 10%,#c9e99d44,transparent 24%),
+radial-gradient(circle at 50% 100%,#8de3c133,transparent 25%),
+var(--bg);
+overflow-x:hidden;
+}
+
+button{
+border:0;
+cursor:pointer;
+}
+
+.layout{
+display:flex;
+min-height:100vh;
+}
+
+
+/* SIDEBAR */
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+width:250px;
+padding:25px 16px;
+background:rgba(255,255,255,.91);
+backdrop-filter:blur(22px);
+border-right:1px solid var(--line);
+z-index:20;
+}
+
+.logo{
+font-size:25px;
+font-weight:800;
+letter-spacing:-1px;
+padding:0 12px 28px;
+}
+
+.logo span{
+background:linear-gradient(135deg,#056b50,#20b978,#55c98b);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.sidebar-close{
+display:none;
+align-items:center;
+justify-content:center;
+float:right;
+width:32px;
+height:32px;
+border-radius:9px;
+background:#eaf8f0;
+color:#075b45;
+font-size:22px;
+line-height:1;
+}
+
+.nav{
+display:flex;
+align-items:center;
+gap:12px;
+padding:13px 15px;
+margin:6px 0;
+border-radius:14px;
+color:var(--muted);
+font-size:13px;
+font-weight:700;
+cursor:pointer;
+transition:.25s;
+}
+
+.nav:hover{
+background:#effaf4;
+color:var(--emerald);
+transform:translateX(3px);
+}
+
+.nav.active{
+color:#075b45;
+background:linear-gradient(135deg,#dff9eb,#bdf2d2);
+box-shadow:0 8px 22px rgba(32,185,120,.13);
+}
+
+.user-details{
+margin-top:20px;
+padding:15px;
+border-radius:17px;
+background:linear-gradient(135deg,#effbf5,#e3f8ec);
+border:1px solid #d6eadf;
+}
+
+.user-avatar{
+width:40px;
+height:40px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#087f5b,#20b978);
+color:white;
+font-size:17px;
+font-weight:800;
+margin-bottom:10px;
+}
+
+.user-details strong{
+display:block;
+font-size:12px;
+color:#17372b;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.user-detail{
+font-size:9px;
+color:#789187;
+margin-top:5px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.view-profile{
+margin-top:11px;
+width:100%;
+padding:8px;
+border-radius:9px;
+background:white;
+color:#087f5b;
+font-size:9px;
+font-weight:800;
+border:1px solid #d6eadf;
+}
+
+.sidebar-bottom{
+position:absolute;
+left:16px;
+right:16px;
+bottom:25px;
+padding:16px;
+border-radius:18px;
+background:linear-gradient(135deg,#e9f8d9,#effbf5);
+border:1px solid #d6ead5;
+}
+
+.sidebar-bottom small{
+font-size:10px;
+color:#789187;
+}
+
+.sidebar-bottom strong{
+display:block;
+margin-top:5px;
+font-size:13px;
+color:#287653;
+}
+
+
+
+/* PROFILE MODAL */
+.profile-modal{
+position:fixed;
+inset:0;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:rgba(18,45,35,.35);
+backdrop-filter:blur(5px);
+z-index:9999;
+}
+.profile-card{
+width:min(420px,100%);
+background:#fff;
+border:1px solid #dceee5;
+border-radius:24px;
+padding:24px;
+box-shadow:0 25px 70px rgba(30,80,60,.22);
+}
+.profile-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:20px;
+}
+.profile-head h2{
+font-size:21px;
+color:#17372b;
+}
+.profile-close{
+width:36px;
+height:36px;
+border:0;
+border-radius:12px;
+background:#edf8f2;
+color:#087f5b;
+font-size:20px;
+cursor:pointer;
+}
+.profile-avatar-large{
+width:76px;
+height:76px;
+border-radius:22px;
+background:linear-gradient(135deg,#087f5b,#20b978);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+font-weight:800;
+margin:0 auto 12px;
+}
+.profile-main-name{
+text-align:center;
+font-size:20px;
+font-weight:800;
+color:#17372b;
+}
+.profile-main-email{
+text-align:center;
+font-size:12px;
+color:#789187;
+margin-top:5px;
+margin-bottom:20px;
+word-break:break-word;
+}
+.profile-info{
+display:grid;
+gap:10px;
+}
+.profile-info-row{
+padding:13px 14px;
+border-radius:14px;
+background:#f5fbf8;
+border:1px solid #e0eee8;
+}
+.profile-info-label{
+font-size:10px;
+color:#789187;
+margin-bottom:4px;
+}
+.profile-info-value{
+font-size:13px;
+font-weight:700;
+color:#23493a;
+word-break:break-word;
+}
+.profile-logout{
+width:100%;
+margin-top:18px;
+padding:12px;
+border:0;
+border-radius:13px;
+background:#fff1f1;
+color:#c53b3b;
+font-size:13px;
+font-weight:800;
+cursor:pointer;
+}
+
+/* PROFILE EDIT */
+.profile-edit-btn{
+width:100%;
+margin-top:12px;
+padding:12px;
+border:0;
+border-radius:13px;
+background:linear-gradient(135deg,#087f5b,#20b978);
+color:white;
+font-size:13px;
+font-weight:800;
+cursor:pointer;
+}
+.profile-edit-form{
+display:none;
+margin-top:18px;
+}
+.profile-edit-form .field{
+margin-bottom:12px;
+}
+.profile-edit-form label{
+font-size:10px;
+font-weight:800;
+color:#52675e;
+margin-bottom:5px;
+}
+.profile-edit-form input{
+width:100%;
+padding:11px 12px;
+border:1px solid var(--line);
+border-radius:12px;
+outline:none;
+background:#fbfffd;
+font-size:12px;
+color:var(--text);
+}
+.profile-edit-form input:focus{
+border-color:var(--green);
+box-shadow:0 0 0 3px rgba(32,185,120,.1);
+}
+.profile-edit-note{
+font-size:10px;
+line-height:1.5;
+color:var(--muted);
+margin:8px 0 12px;
+}
+.profile-edit-actions{
+display:flex;
+gap:8px;
+margin-top:12px;
+}
+.profile-edit-actions button{
+flex:1;
+padding:11px;
+border-radius:12px;
+font-size:11px;
+font-weight:800;
+}
+.profile-save{
+background:linear-gradient(135deg,#087f5b,#20b978);
+color:white;
+}
+.profile-cancel{
+background:#edf3ef;
+color:#53655d;
+}
+.profile-password-note{
+font-size:9px;
+color:#789187;
+margin-top:5px;
+}
+
+/* MAIN */
+
+.main{
+margin-left:250px;
+width:calc(100% - 250px);
+padding:30px 35px;
+min-width:0;
+}
+
+
+/* TOPBAR */
+
+.topbar{
+position:relative;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:28px;
+min-width:0;
+}
+
+.greeting{
+min-width:0;
+}
+
+.greeting h1{
+font-size:28px;
+font-weight:800;
+letter-spacing:-1px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.greeting p{
+font-size:13px;
+color:var(--muted);
+margin-top:5px;
+}
+
+.actions{
+display:flex;
+gap:10px;
+align-items:center;
+flex-shrink:0;
+}
+
+.icon-btn{
+width:42px;
+height:42px;
+border-radius:13px;
+background:white;
+box-shadow:var(--shadow);
+font-size:18px;
+color:var(--forest);
+}
+
+.primary{
+padding:12px 18px;
+border-radius:13px;
+color:white;
+font-size:12px;
+font-weight:800;
+background:linear-gradient(135deg,#087f5b,#20b978);
+box-shadow:0 10px 25px rgba(32,185,120,.20);
+transition:.25s;
+}
+
+.primary:hover{
+transform:translateY(-2px);
+box-shadow:0 15px 30px rgba(32,185,120,.28);
+}
+
+
+/* STATS */
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,minmax(0,1fr));
+gap:18px;
+margin-bottom:25px;
+}
+
+.stat{
+position:relative;
+overflow:hidden;
+min-height:150px;
+padding:22px;
+border-radius:23px;
+box-shadow:var(--shadow);
+transition:.3s;
+}
+
+.stat:hover{
+transform:translateY(-6px);
+}
+
+.stat:nth-child(1){
+color:#075b45;
+background:linear-gradient(135deg,#dff9eb,#bdf2d2);
+}
+
+.stat:nth-child(2){
+color:#236347;
+background:linear-gradient(135deg,#e8f7d7,#c9e99d);
+}
+
+.stat:nth-child(3){
+color:#126c68;
+background:linear-gradient(135deg,#d9faf1,#8de3c1);
+}
+
+.stat:nth-child(4){
+color:white;
+background:linear-gradient(135deg,#087f5b,#20b978);
+}
+
+.stat::before{
+content:"";
+position:absolute;
+width:110px;
+height:110px;
+border-radius:50%;
+right:-32px;
+top:-35px;
+background:rgba(255,255,255,.32);
+}
+
+.stat:nth-child(4)::before{
+background:rgba(255,255,255,.13);
+}
+
+.stat-icon{
+font-size:26px;
+margin-bottom:15px;
+position:relative;
+z-index:2;
+}
+
+.stat h2{
+font-size:30px;
+position:relative;
+z-index:2;
+}
+
+.stat p{
+font-size:11px;
+margin-top:4px;
+opacity:.75;
+position:relative;
+z-index:2;
+}
+
+
+/* CONTENT */
+
+.grid{
+display:grid;
+grid-template-columns:minmax(0,2fr) minmax(280px,1fr);
+gap:20px;
+align-items:start;
+}
+
+.card{
+padding:23px;
+margin-bottom:20px;
+border-radius:23px;
+background:rgba(255,255,255,.94);
+border:1px solid var(--line);
+box-shadow:var(--shadow);
+min-width:0;
+}
+
+.card-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin-bottom:20px;
+}
+
+.card-head h3{
+font-size:16px;
+}
+
+.card-head span{
+font-size:11px;
+color:var(--emerald);
+font-weight:800;
+white-space:nowrap;
+}
+
+
+/* APPLICATION */
+
+.application{
+display:flex;
+align-items:center;
+gap:14px;
+padding:15px 0;
+border-bottom:1px solid var(--line);
+min-width:0;
+}
+
+.application:last-child{
+border-bottom:0;
+}
+
+.company-icon{
+width:45px;
+height:45px;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-shrink:0;
+border-radius:14px;
+color:#075b45;
+font-weight:800;
+background:linear-gradient(135deg,#c9e99d,#8de3c1);
+}
+
+.app-info{
+flex:1;
+min-width:0;
+}
+
+.app-info strong{
+font-size:13px;
+display:block;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.app-info p{
+font-size:11px;
+color:var(--muted);
+margin-top:4px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.app-actions{
+display:flex;
+gap:4px;
+flex-shrink:0;
+}
+
+.app-actions button{
+background:none;
+font-size:15px;
+padding:4px;
+}
+
+
+/* BADGES */
+
+.badge{
+padding:7px 10px;
+border-radius:30px;
+font-size:10px;
+font-weight:800;
+white-space:nowrap;
+flex-shrink:0;
+}
+
+.applied{
+background:#e0f7e9;
+color:#087f5b;
+}
+
+.shortlisted{
+background:#e0f5ec;
+color:#167a63;
+}
+
+.interview{
+background:#eaf8d8;
+color:#688b20;
+}
+
+.selected{
+background:#c9f3d9;
+color:#047857;
+}
+
+.rejected{
+background:#fee2e2;
+color:#dc2626;
+}
+
+
+/* REMINDERS */
+
+.reminder{
+position:relative;
+padding:15px;
+margin-bottom:10px;
+border-radius:16px;
+background:#f8fcf9;
+border:1px solid #e0eee6;
+transition:.25s;
+}
+
+.reminder:nth-child(1){
+background:linear-gradient(135deg,#effcf6,#dff9eb);
+}
+
+.reminder:nth-child(2){
+background:linear-gradient(135deg,#f5fbdc,#e8f7d7);
+}
+
+.reminder:nth-child(3){
+background:linear-gradient(135deg,#edfbf7,#d9faf1);
+}
+
+.reminder:hover{
+transform:translateX(4px);
+}
+
+.reminder strong{
+font-size:12px;
+}
+
+.reminder p{
+font-size:10px;
+color:var(--muted);
+margin-top:5px;
+}
+
+
+/* GOAL */
+
+.goal-box{
+padding:20px;
+border-radius:20px;
+background:linear-gradient(135deg,#effbe8,#e1f8ed);
+border:1px solid #d7ebd9;
+}
+
+.goal-top{
+display:flex;
+justify-content:space-between;
+margin-bottom:12px;
+font-size:12px;
+}
+
+.progress{
+height:10px;
+background:#dcecdf;
+border-radius:20px;
+overflow:hidden;
+}
+
+.progress div{
+height:100%;
+width:0;
+border-radius:20px;
+background:linear-gradient(90deg,#688b20,#20b978,#38c9a0);
+transition:.6s;
+}
+
+
+/* TIP */
+
+.tip-box{
+padding:20px;
+border-radius:20px;
+background:linear-gradient(135deg,#e4f8ec,#d9faf1,#effbdc);
+border:1px solid #d5eadb;
+}
+
+.tip-icon{
+font-size:27px;
+margin-bottom:10px;
+}
+
+.tip-box strong{
+font-size:13px;
+}
+
+.tip-box p{
+font-size:11px;
+line-height:1.6;
+color:#789187;
+margin-top:8px;
+}
+
+
+/* EMPTY */
+
+.empty-state{
+text-align:center;
+padding:35px 15px;
+color:#789187;
+}
+
+.empty-state .empty-icon{
+font-size:40px;
+}
+
+.empty-state p{
+margin-top:10px;
+font-size:12px;
+}
+
+.empty-state small{
+display:block;
+font-size:10px;
+margin-top:5px;
+}
+
+
+/* DYNAMIC */
+
+.dynamic-section{
+animation:fadeIn .3s ease;
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.dynamic-title{
+font-size:20px;
+font-weight:800;
+margin-bottom:20px;
+}
+
+.analytics-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+}
+
+.analytics-box{
+padding:20px;
+border-radius:18px;
+}
+
+.analytics-box .big{
+display:block;
+font-size:28px;
+font-weight:800;
+margin-top:8px;
+}
+
+.analytics-box p{
+font-size:10px;
+color:var(--muted);
+margin-top:4px;
+}
+
+.breakdown{
+margin-top:20px;
+padding:20px;
+border-radius:20px;
+background:#f8fcf9;
+border:1px solid var(--line);
+}
+
+.break-row{
+display:flex;
+justify-content:space-between;
+padding:12px 0;
+border-bottom:1px solid var(--line);
+font-size:12px;
+}
+
+.break-row:last-child{
+border-bottom:0;
+}
+
+
+/* CALENDAR */
+
+.calendar-header{
+padding:22px;
+border-radius:20px;
+background:linear-gradient(135deg,#effcf6,#dff9eb);
+margin-bottom:20px;
+}
+
+.calendar-month{
+font-size:25px;
+font-weight:800;
+margin-top:5px;
+}
+
+.calendar-event{
+display:flex;
+align-items:center;
+gap:13px;
+padding:15px 0;
+border-bottom:1px solid var(--line);
+}
+
+.calendar-event:last-child{
+border-bottom:0;
+}
+
+.calendar-icon{
+width:45px;
+height:45px;
+border-radius:13px;
+background:#d9faf1;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+flex-shrink:0;
+}
+
+.calendar-info{
+flex:1;
+min-width:0;
+}
+
+.calendar-info strong{
+font-size:12px;
+display:block;
+}
+
+.calendar-info p{
+font-size:10px;
+color:var(--muted);
+margin-top:4px;
+}
+
+.calendar-date{
+font-size:10px;
+font-weight:800;
+color:#087f5b;
+white-space:nowrap;
+}
+
+
+/* RESUME */
+
+.resume-box{
+padding:25px;
+border-radius:20px;
+background:linear-gradient(135deg,#effbe8,#e1f8ed);
+}
+
+.resume-icon{
+font-size:45px;
+margin-bottom:12px;
+}
+
+.resume-box h3{
+font-size:18px;
+margin-bottom:8px;
+}
+
+.resume-box p{
+font-size:11px;
+line-height:1.6;
+color:var(--muted);
+}
+
+.resume-tips{
+margin-top:18px;
+padding:18px;
+border-radius:18px;
+background:#f8fcf9;
+border:1px solid var(--line);
+}
+
+.resume-tips strong{
+font-size:12px;
+}
+
+.resume-tips p{
+font-size:10px;
+color:var(--muted);
+line-height:1.6;
+margin-top:7px;
+}
+
+
+.resume-delete-btn{
+padding:11px 17px;
+border-radius:12px;
+background:#fff1f1;
+color:#d13b3b;
+font-size:12px;
+font-weight:800;
+border:1px solid #ffd4d4;
+transition:.2s;
+}
+
+.resume-delete-btn:hover{
+background:#ffe3e3;
+transform:translateY(-1px);
+}
+
+.resume-delete-btn:disabled{
+opacity:.6;
+cursor:not-allowed;
+transform:none;
+}
+
+/* MODAL */
+
+.modal-bg{
+position:fixed;
+inset:0;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:rgba(5,45,30,.48);
+backdrop-filter:blur(8px);
+z-index:50;
+}
+
+.modal{
+width:100%;
+max-width:560px;
+max-height:90vh;
+overflow:auto;
+padding:25px;
+border-radius:25px;
+background:white;
+box-shadow:0 30px 80px rgba(10,80,50,.2);
+}
+
+.modal h2{
+margin-bottom:20px;
+font-size:21px;
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+}
+
+.field{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.field.full{
+grid-column:1/-1;
+}
+
+.field label{
+font-size:11px;
+font-weight:800;
+color:#52675e;
+}
+
+.field input,
+.field select,
+.field textarea{
+width:100%;
+padding:12px;
+border:1px solid var(--line);
+border-radius:12px;
+outline:none;
+background:#fbfffd;
+font-size:12px;
+color:var(--text);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+border-color:var(--green);
+box-shadow:0 0 0 3px rgba(32,185,120,.1);
+}
+
+.field textarea{
+min-height:80px;
+resize:vertical;
+}
+
+.modal-actions{
+display:flex;
+justify-content:flex-end;
+gap:10px;
+margin-top:20px;
+}
+
+.cancel{
+padding:11px 17px;
+border-radius:12px;
+background:#edf3ef;
+color:#53655d;
+font-size:12px;
+font-weight:700;
+}
+
+
+/* MOBILE */
+
+.mobile-menu{
+display:none;
+}
+
+
+/* LAPTOP */
+
+@media(min-width:951px) and (max-width:1199px){
+
+.sidebar{
+width:225px;
+}
+
+.main{
+margin-left:225px;
+width:calc(100% - 225px);
+padding:25px;
+}
+
+.stats{
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.grid{
+grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);
+}
+
+}
+
+
+/* TABLET */
+
+@media(max-width:950px){
+
+.sidebar{
+transform:translateX(-100%);
+transition:transform .3s ease;
+box-shadow:15px 0 40px rgba(0,0,0,.12);
+}
+
+.sidebar.open{
+transform:translateX(0);
+}
+
+.sidebar-close{
+display:flex;
+}
+
+.main{
+margin-left:0;
+width:100%;
+padding:24px;
+}
+
+.topbar{
+position:relative;
+padding-left:55px;
+min-height:44px;
+}
+
+.mobile-menu{
+display:flex;
+align-items:center;
+justify-content:center;
+position:absolute;
+left:0;
+top:0;
+width:42px;
+height:42px;
+}
+
+.stats{
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:15px;
+}
+
+.grid{
+grid-template-columns:1fr;
+gap:0;
+}
+
+.analytics-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.main{
+padding:16px;
+}
+
+.topbar{
+padding-left:50px;
+margin-bottom:20px;
+align-items:flex-start;
+}
+
+.greeting h1{
+font-size:21px;
+line-height:1.25;
+}
+
+.greeting p{
+font-size:10px;
+line-height:1.5;
+max-width:230px;
+}
+
+.actions{
+gap:6px;
+}
+
+.actions .primary{
+padding:10px 12px;
+border-radius:11px;
+font-size:9px;
+white-space:nowrap;
+}
+
+.icon-btn{
+width:40px;
+height:40px;
+}
+
+.stats{
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:10px;
+margin-bottom:16px;
+}
+
+.stat{
+min-height:120px;
+padding:15px;
+border-radius:17px;
+}
+
+.stat-icon{
+font-size:21px;
+margin-bottom:9px;
+}
+
+.stat h2{
+font-size:23px;
+}
+
+.stat p{
+font-size:9px;
+line-height:1.4;
+}
+
+.card{
+padding:16px;
+margin-bottom:15px;
+border-radius:18px;
+}
+
+.card-head{
+margin-bottom:13px;
+}
+
+.card-head h3{
+font-size:14px;
+}
+
+.card-head span{
+font-size:9px;
+}
+
+.application{
+display:grid;
+grid-template-columns:40px minmax(0,1fr) auto;
+gap:9px;
+padding:12px 0;
+align-items:center;
+}
+
+.company-icon{
+width:40px;
+height:40px;
+border-radius:11px;
+font-size:13px;
+}
+
+.app-info strong{
+font-size:11px;
+}
+
+.app-info p{
+font-size:9px;
+margin-top:3px;
+}
+
+.application .badge{
+font-size:8px;
+padding:5px 7px;
+}
+
+.goal-box{
+padding:16px;
+border-radius:16px;
+}
+
+.goal-top{
+font-size:10px;
+margin-bottom:9px;
+}
+
+.progress{
+height:8px;
+}
+
+.reminder{
+padding:12px;
+margin-bottom:8px;
+border-radius:13px;
+}
+
+.reminder strong{
+font-size:10px;
+}
+
+.reminder p{
+font-size:9px;
+line-height:1.5;
+}
+
+.tip-box{
+padding:16px;
+border-radius:16px;
+}
+
+.tip-icon{
+font-size:23px;
+margin-bottom:7px;
+}
+
+.tip-box strong{
+font-size:11px;
+}
+
+.tip-box p{
+font-size:9px;
+line-height:1.6;
+}
+
+.modal-bg{
+padding:12px;
+}
+
+.modal{
+max-height:92vh;
+padding:18px;
+border-radius:20px;
+}
+
+.modal h2{
+font-size:18px;
+margin-bottom:15px;
+}
+
+.form-grid{
+grid-template-columns:1fr;
+gap:11px;
+}
+
+.field.full{
+grid-column:auto;
+}
+
+.field label{
+font-size:10px;
+}
+
+.field input,
+.field select,
+.field textarea{
+padding:11px;
+font-size:11px;
+}
+
+.modal-actions{
+margin-top:15px;
+gap:8px;
+}
+
+.cancel,
+.modal-actions .primary{
+padding:10px 13px;
+font-size:10px;
+}
+
+.analytics-grid{
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.analytics-box{
+padding:15px;
+}
+
+.analytics-box .big{
+font-size:23px;
+}
+
+.calendar-month{
+font-size:21px;
+}
+
+}
+
+
+/* VERY SMALL */
+
+@media(max-width:380px){
+
+.main{
+padding:12px;
+}
+
+.greeting h1{
+font-size:19px;
+}
+
+.greeting p{
+font-size:9px;
+}
+
+.actions .primary{
+padding:9px 10px;
+font-size:8px;
+}
+
+.stats{
+gap:8px;
+}
+
+.stat{
+min-height:110px;
+padding:13px;
+}
+
+.stat h2{
+font-size:21px;
+}
+
+.stat p{
+font-size:8px;
+}
+
+.card{
+padding:14px;
+}
+
+.application{
+grid-template-columns:36px minmax(0,1fr) auto;
+gap:7px;
+}
+
+.company-icon{
+width:36px;
+height:36px;
+}
+
+.application .badge{
+display:none;
+}
+
+}
+
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+width:7px;
+height:7px;
+}
+
+::-webkit-scrollbar-track{
+background:#eff8f3;
+}
+
+::-webkit-scrollbar-thumb{
+background:#b8daca;
+border-radius:20px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="layout">
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar" id="sidebar">
+
+<div class="logo">
+
+Hire<span>Track</span>
+
+<button
+class="sidebar-close"
+onclick="toggleSidebar()">
+×
+</button>
+
+</div>
+
+
+<div class="nav active"
+onclick="showSection('dashboard',this)">
+
+<span>🏠</span>
+Dashboard
+
+</div>
+
+
+<div class="nav"
+onclick="showSection('applications',this)">
+
+<span>📋</span>
+Applications
+
+</div>
+
+
+<div class="nav"
+onclick="showSection('reminders',this)">
+
+<span>🔔</span>
+Reminders
+
+</div>
+
+
+<div class="nav"
+onclick="showSection('analytics',this)">
+
+<span>📊</span>
+Analytics
+
+</div>
+
+
+<div class="nav"
+onclick="showSection('calendar',this)">
+
+<span>📅</span>
+Calendar
+
+</div>
+
+
+<div class="nav"
+onclick="showSection('resume',this)">
+
+<span>📄</span>
+Resume
+
+</div>
+
+
+<!-- USER -->
+
+<div class="user-details">
+
+<div class="user-avatar" id="userAvatar">
+U
+</div>
+
+<strong id="sideUserName">
+User
+</strong>
+
+<div class="user-detail" id="sideUserEmail">
+✉️ email@example.com
+</div>
+
+<div class="user-detail" id="sideUserPhone">
+📱 +91 XXXXX XXXXX
+</div>
+
+<button
+class="view-profile"
+onclick="viewProfile()">
+
+👤 View Profile
+
+</button>
+
+</div>
+
+
+<div class="sidebar-bottom">
+
+<small>
+Career Progress
+</small>
+
+<strong>
+Keep growing 🌱
+</strong>
+
+</div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<div class="greeting">
+
+<h1 id="welcomeText">
+Hello 👋
+</h1>
+
+<p>
+Track your career journey in one place.
+</p>
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="icon-btn mobile-menu"
+onclick="toggleSidebar()">
+
+☰
+
+</button>
+
+
+<button
+class="primary"
+onclick="openModal()">
+
+＋ Add Application
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="stat">
+
+<div class="stat-icon">
+📋
+</div>
+
+<h2 id="total">
+0
+</h2>
+
+<p>
+Total Applications
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-icon">
+⚡
+</div>
+
+<h2 id="active">
+0
+</h2>
+
+<p>
+Active Applications
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-icon">
+🎯
+</div>
+
+<h2 id="interviews">
+0
+</h2>
+
+<p>
+Interviews
+</p>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-icon">
+🏆
+</div>
+
+<h2 id="selected">
+0
+</h2>
+
+<p>
+Selected
+</p>
+
+</div>
+
+</div>
+
+
+<!-- DASHBOARD CONTENT -->
+
+<div id="dashboardContent">
+
+<div class="grid">
+
+
+<div>
+
+
+<!-- APPLICATIONS -->
+
+<div
+class="card"
+id="applicationsSection">
+
+<div class="card-head">
+
+<h3>
+Recent Applications
+</h3>
+
+<span
+onclick="showSection('applications',document.querySelectorAll('.nav')[1])"
+style="cursor:pointer">
+
+View All →
+
+</span>
+
+</div>
+
+<div id="applicationsList"></div>
+
+</div>
+
+
+<!-- GOAL -->
+
+<div class="card">
+
+<div class="card-head">
+
+<h3>
+Monthly Goal 🌱
+</h3>
+
+<span id="goalText">
+0 / 20
+</span>
+
+</div>
+
+
+<div class="goal-box">
+
+<div class="goal-top">
+
+<strong>
+Application Target
+</strong>
+
+<strong id="goalPercent">
+0%
+</strong>
+
+</div>
+
+
+<div class="progress">
+
+<div id="goalBar"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- RIGHT -->
+
+<div>
+
+
+<!-- REMINDERS -->
+
+<div
+class="card"
+id="remindersSection">
+
+<div class="card-head">
+
+<h3>
+Reminders 🔔
+</h3>
+
+<span>
+Upcoming
+</span>
+
+</div>
+
+
+<div id="remindersList"></div>
+
+</div>
+
+
+<!-- CAREER TIP -->
+
+<div class="card">
+
+<div class="card-head">
+
+<h3>
+Career Tip
+</h3>
+
+</div>
+
+
+<div class="tip-box">
+
+<div class="tip-icon">
+🌿
+</div>
+
+<strong>
+Consistency beats intensity.
+</strong>
+
+<p>
+
+Apply regularly, follow up on time
+and keep improving your skills.
+
+Small steps every day build a stronger career.
+
+</p>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- DYNAMIC PAGE -->
+
+<div id="pageContainer"></div>
+
+
+</main>
+
+
+<!-- PROFILE MODAL -->
+<div class="profile-modal" id="profileModal">
+  <div class="profile-card">
+    <div class="profile-head">
+      <h2>My Profile</h2>
+      <button class="profile-close" type="button" onclick="closeProfile()">×</button>
+    </div>
+
+    <div class="profile-avatar-large" id="profileAvatar">U</div>
+    <div class="profile-main-name" id="profileName">User</div>
+    <div class="profile-main-email" id="profileEmail">-</div>
+
+    <div id="profileViewMode">
+      <div class="profile-info">
+        <div class="profile-info-row">
+          <div class="profile-info-label">NAME</div>
+          <div class="profile-info-value" id="profileNameDetail">-</div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-label">EMAIL</div>
+          <div class="profile-info-value" id="profileEmailDetail">-</div>
+        </div>
+        <div class="profile-info-row">
+          <div class="profile-info-label">PHONE</div>
+          <div class="profile-info-value" id="profilePhone">-</div>
+        </div>
+      </div>
+
+      <button class="profile-edit-btn" type="button" onclick="openProfileEdit()">✏️ Edit Profile</button>
+      <button class="profile-logout" type="button" onclick="logout()">🚪 Logout</button>
+    </div>
+
+    <div class="profile-edit-form" id="profileEditForm">
+      <div class="field">
+        <label>NAME</label>
+        <input id="editProfileName" type="text" placeholder="Your name">
+      </div>
+
+      <div class="field">
+        <label>PHONE NUMBER</label>
+        <input id="editProfilePhone" type="tel" inputmode="tel" placeholder="e.g. +91 9876543210">
+      </div>
+
+      <div class="field">
+        <label>EMAIL</label>
+        <input id="editProfileEmail" type="email" placeholder="your@email.com">
+      </div>
+
+      <div class="field">
+        <label>NEW PASSWORD</label>
+        <input id="editProfilePassword" type="password" placeholder="Leave empty to keep current password">
+        <div class="profile-password-note">Minimum 6 characters. Password update may require re-login.</div>
+      </div>
+
+      <div class="profile-edit-note">📧 If you change your email, Supabase may send a confirmation link to the new email address before the change becomes active.</div>
+
+      <div id="profileEditStatus" style="font-size:10px;color:#789187;margin-bottom:8px"></div>
+
+      <div class="profile-edit-actions">
+        <button class="profile-cancel" type="button" onclick="closeProfileEdit()">Cancel</button>
+        <button class="profile-save" id="profileSaveBtn" type="button" onclick="saveProfileChanges()">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div
+class="modal-bg"
+id="modal">
+
+
+<div class="modal">
+
+
+<h2 id="modalTitle">
+Add Application 🚀
+</h2>
+
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>
+Company
+</label>
+
+<input
+id="company"
+placeholder="e.g. Zoho">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Role
+</label>
+
+<input
+id="role"
+placeholder="e.g. Software Intern">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Location
+</label>
+
+<input
+id="location"
+placeholder="e.g. Coimbatore">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Type
+</label>
+
+<select id="type">
+
+<option>Internship</option>
+<option>Full-time</option>
+<option>Part-time</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Application Date
+</label>
+
+<input
+id="date"
+type="date">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Salary / Stipend
+</label>
+
+<input
+id="salary"
+placeholder="e.g. ₹10,000">
+
+</div>
+
+
+<div class="field">
+
+<label>
+Status
+</label>
+
+<select id="status">
+
+<option>Applied</option>
+<option>Shortlisted</option>
+<option>Interview</option>
+<option>Selected</option>
+<option>Rejected</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Follow-up Date
+</label>
+
+<input
+id="followup"
+type="date">
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Application Link
+</label>
+
+<input
+id="link"
+placeholder="https://...">
+
+</div>
+
+
+<div class="field full">
+
+<label>
+Notes
+</label>
+
+<textarea
+id="notes"
+placeholder="Add interview details, recruiter info, etc."></textarea>
+
+</div>
+
+
+</div>
+
+
+<div class="modal-actions">
+
+<button
+class="cancel"
+onclick="closeModal()">
+
+Cancel
+
+</button>
+
+
+<button
+class="primary"
+onclick="saveApplication()">
+
+Save Application
+
+</button>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+/* ==================================
+   SUPABASE CONFIG
+================================== */
+const SUPABASE_URL="https://mfbksvxvwujafacxpzqh.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mYmtzdnh2d3VqYWZhY3hwenFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4OTQxNjIsImV4cCI6MjEwNTQ3MDE2Mn0.z3p1cJd04o9vLYWaJPaY9-08klfaUT8nbWeV92QyAnM";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+let currentUser=null;
+let profile=null;
+let applications=[];
+let editingId=null;
+
+/* ==================================
+   AUTH + INITIAL LOAD
+================================== */
+async function init(){
+  const {data,error}=await db.auth.getSession();
+  if(error || !data.session){
+    window.location.href="login.html";
+    return;
+  }
+  currentUser=data.session.user;
+  await loadProfile();
+  await loadApplications();
+  renderDashboard();
+}
+
+async function loadProfile(){
+  const meta=currentUser.user_metadata||{};
+  const {data,error}=await db.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
+  profile=data||{};
+
+  const name=meta.name||meta.full_name||profile.name||profile.full_name||currentUser.email?.split("@")[0]||"User";
+  const phone=meta.phone||profile.phone||"Not added";
+
+  document.getElementById("welcomeText").textContent="Hello "+name+" 👋";
+  document.getElementById("sideUserName").textContent=name;
+  document.getElementById("sideUserEmail").textContent="✉️ "+currentUser.email;
+  document.getElementById("sideUserPhone").textContent="📱 "+phone;
+  document.getElementById("userAvatar").textContent=name.charAt(0).toUpperCase();
+  updateProfileUI();
+}
+
+
+async function loadApplications(){
+  const {data,error}=await db.from("applications").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:false});
+  if(error){
+    console.error(error);
+    alert("Applications load aagala. Supabase table/RLS policies check pannunga.");
+    applications=[];
+    return;
+  }
+  applications=(data||[]).map(normalizeApplication);
+}
+
+function normalizeApplication(a){
+  return {
+    ...a,
+    id:a.id,
+    company:a.company||"",
+    role:a.role||"",
+    location:a.location||"",
+    type:a.type||"Internship",
+    date:a.date||a.applied_date||"",
+    salary:a.salary||a.stipend||"",
+    status:a.status||"Applied",
+    followup:a.followup||a.follow_up||a.followup_date||"",
+    link:a.link||a.application_link||"",
+    notes:a.notes||""
+  };
+}
+
+function renderDashboard(){
+  renderApplications();
+  renderReminders();
+  updateStats();
+}
+
+/* ==================================
+   SIDEBAR
+================================== */
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("open");
+}
+
+/* ==================================
+   NAVIGATION
+================================== */
+function showSection(section,element){
+  document.querySelectorAll(".nav").forEach(nav=>nav.classList.remove("active"));
+  if(element) element.classList.add("active");
+
+  if(window.innerWidth<=950) document.getElementById("sidebar").classList.remove("open");
+
+  const dashboard=document.getElementById("dashboardContent");
+  const page=document.getElementById("pageContainer");
+
+  if(section==="dashboard"){
+    dashboard.style.display="block";
+    page.innerHTML="";
+    window.scrollTo({top:0,behavior:"smooth"});
+    return;
+  }
+
+  dashboard.style.display="none";
+  page.innerHTML="";
+
+  if(section==="applications") createApplicationsPage();
+  else if(section==="reminders") createRemindersPage();
+  else if(section==="analytics") createAnalyticsPage();
+  else if(section==="calendar") createCalendarPage();
+  else if(section==="resume") createResumePage();
+}
+
+/* ==================================
+   APPLICATION PAGE
+================================== */
+function createApplicationsPage(){
+  document.getElementById("pageContainer").innerHTML=`
+  <div class="card dynamic-section">
+    <div class="card-head">
+      <h3 class="dynamic-title">All Applications 📋</h3>
+      <button class="primary" onclick="openModal()">＋ Add Application</button>
+    </div>
+    <div id="allApplications"></div>
+  </div>`;
+  renderAllApplications();
+}
+
+function renderAllApplications(){
+  const box=document.getElementById("allApplications");
+  if(!box) return;
+  if(!applications.length){
+    box.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><p>No applications yet</p><small>Add your first application.</small></div>`;
+    return;
+  }
+  box.innerHTML=applications.map(app=>applicationHTML(app,true)).join("");
+}
+
+function applicationHTML(app,actions=false){
+  const safeId=String(app.id).replace(/'/g,"\\'");
+  return `<div class="application">
+    <div class="company-icon">${escapeHTML((app.company||"C").charAt(0).toUpperCase())}</div>
+    <div class="app-info">
+      <strong>${escapeHTML(app.company)}</strong>
+      <p>${escapeHTML(app.role)}${app.location?" • "+escapeHTML(app.location):""}</p>
+    </div>
+    <span class="badge ${getBadgeClass(app.status)}">${escapeHTML(app.status)}</span>
+    ${actions?`<div class="app-actions"><button title="Edit" onclick="editApplication('${safeId}')">✏️</button><button title="Delete" onclick="deleteApplication('${safeId}')">🗑️</button></div>`:""}
+  </div>`;
+}
+
+/* ==================================
+   REMINDERS
+================================== */
+function createRemindersPage(){
+  const reminders=applications.filter(a=>a.followup).sort((a,b)=>new Date(a.followup)-new Date(b.followup));
+  let html=`<div class="card dynamic-section"><div class="card-head"><h3 class="dynamic-title">Reminders 🔔</h3><span>Upcoming</span></div>`;
+  if(!reminders.length){
+    html+=`<div class="empty-state"><div class="empty-icon">🔔</div><p>No reminders yet</p><small>Add follow-up dates to your applications.</small></div>`;
+  }else{
+    reminders.forEach(app=>html+=`<div class="reminder"><strong>🔔 ${escapeHTML(app.company)}</strong><p>${escapeHTML(app.role)}</p><p>📅 Follow-up: ${formatDate(app.followup)}</p></div>`);
+  }
+  html+=`</div>`;
+  document.getElementById("pageContainer").innerHTML=html;
+}
+
+/* ==================================
+   ANALYTICS
+================================== */
+function createAnalyticsPage(){
+  const total=applications.length;
+  const applied=applications.filter(a=>a.status==="Applied").length;
+  const shortlisted=applications.filter(a=>a.status==="Shortlisted").length;
+  const interviews=applications.filter(a=>a.status==="Interview").length;
+  const selected=applications.filter(a=>a.status==="Selected").length;
+  const rejected=applications.filter(a=>a.status==="Rejected").length;
+  const active=applied+shortlisted+interviews;
+
+  document.getElementById("pageContainer").innerHTML=`
+  <div class="card dynamic-section">
+    <div class="card-head"><h3 class="dynamic-title">Analytics 📊</h3><span>Application Overview</span></div>
+    <div class="analytics-grid">
+      <div class="analytics-box" style="background:#dff9eb"><div>📋</div><span class="big">${total}</span><p>Total Applications</p></div>
+      <div class="analytics-box" style="background:#e8f7d7"><div>⚡</div><span class="big">${active}</span><p>Active Applications</p></div>
+      <div class="analytics-box" style="background:#d9faf1"><div>🎯</div><span class="big">${interviews}</span><p>Interviews</p></div>
+      <div class="analytics-box" style="background:#c9f3d9"><div>🏆</div><span class="big">${selected}</span><p>Selected</p></div>
+    </div>
+    <div class="breakdown"><h3>Application Breakdown</h3>
+      <div class="break-row"><span>🟢 Applied</span><strong>${applied}</strong></div>
+      <div class="break-row"><span>🟡 Shortlisted</span><strong>${shortlisted}</strong></div>
+      <div class="break-row"><span>🔵 Interview</span><strong>${interviews}</strong></div>
+      <div class="break-row"><span>🏆 Selected</span><strong>${selected}</strong></div>
+      <div class="break-row"><span>🔴 Rejected</span><strong>${rejected}</strong></div>
+    </div>
+  </div>`;
+}
+
+/* ==================================
+   CALENDAR
+================================== */
+function createCalendarPage(){
+  const today=new Date();
+  const month=today.toLocaleString("default",{month:"long"});
+  const year=today.getFullYear();
+  const events=applications.filter(a=>a.followup).sort((a,b)=>new Date(a.followup)-new Date(b.followup));
+  let html=`<div class="card dynamic-section"><div class="card-head"><h3 class="dynamic-title">Calendar 📅</h3><span>Follow-ups</span></div><div class="calendar-header"><div style="font-size:11px;color:#789187">Current Month</div><div class="calendar-month">${month} ${year}</div></div><h3 style="margin-bottom:12px">Upcoming Events</h3>`;
+  if(!events.length) html+=`<div class="empty-state"><div class="empty-icon">📅</div><p>No calendar events</p><small>Add follow-up dates while adding applications.</small></div>`;
+  else events.forEach(app=>html+=`<div class="calendar-event"><div class="calendar-icon">📅</div><div class="calendar-info"><strong>${escapeHTML(app.company)}</strong><p>${escapeHTML(app.role)}</p></div><div class="calendar-date">${formatDate(app.followup)}</div></div>`);
+  html+=`</div>`;
+  document.getElementById("pageContainer").innerHTML=html;
+}
+
+/* ==================================
+   RESUME
+================================== */
+function createResumePage(){
+  document.getElementById("pageContainer").innerHTML=`
+  <div class="card dynamic-section">
+    <div class="card-head"><h3 class="dynamic-title">Resume 📄</h3></div>
+    <div class="resume-box">
+      <div class="resume-icon">📄</div>
+      <h3>Your Resume</h3>
+      <p>Upload your latest resume and view or delete it anytime.</p>
+      <input id="resumeFileInput" type="file" accept=".pdf,application/pdf" style="display:none" onchange="uploadResumeFile(this)">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+        <button class="primary" type="button" onclick="document.getElementById('resumeFileInput').click()">📤 Upload Resume</button>
+        <button id="viewResumeBtn" class="cancel" type="button" onclick="viewResume()" style="display:none">👁️ View Resume</button>
+        <button id="deleteResumeBtn" class="resume-delete-btn" type="button" onclick="deleteResume()" style="display:none">🗑️ Delete Resume</button>
+      </div>
+      <div id="resumeStatus" style="margin-top:12px;font-size:11px;color:#789187"></div>
+    </div>
+    <div class="resume-tips"><strong>💡 Resume Tips</strong><p>PDF only. Maximum 10 MB. You can replace your old resume by uploading a new PDF.</p></div>
+  </div>`;
+  loadResumeInfo();
+}
+
+async function loadResumeInfo(){
+  const viewBtn=document.getElementById("viewResumeBtn");
+  const deleteBtn=document.getElementById("deleteResumeBtn");
+  const status=document.getElementById("resumeStatus");
+  if(!viewBtn||!deleteBtn||!status||!currentUser)return;
+
+  const path=currentUser.user_metadata?.resume_path;
+  const name=currentUser.user_metadata?.resume_name;
+
+  if(path){
+    viewBtn.style.display="inline-block";
+    deleteBtn.style.display="inline-block";
+    status.textContent="Saved resume: "+(name||"Resume.pdf");
+  }else{
+    viewBtn.style.display="none";
+    deleteBtn.style.display="none";
+    status.textContent="No resume uploaded yet.";
+  }
+}
+
+async function uploadResumeFile(input){
+  const file=input.files?.[0];
+  if(!file||!currentUser)return;
+
+  if(file.type!=="application/pdf"){
+    alert("Please upload a PDF resume.");
+    input.value="";
+    return;
+  }
+
+  if(file.size>10*1024*1024){
+    alert("Resume file must be 10 MB or smaller.");
+    input.value="";
+    return;
+  }
+
+  const status=document.getElementById("resumeStatus");
+  const viewBtn=document.getElementById("viewResumeBtn");
+  status.textContent="Uploading resume...";
+  viewBtn.style.display="none";
+
+  const oldPath=currentUser.user_metadata?.resume_path;
+  const path=currentUser.id+"/resume.pdf";
+
+  const {error:uploadError}=await db.storage
+    .from("resumes")
+    .upload(path,file,{contentType:"application/pdf",upsert:true});
+
+  if(uploadError){
+    console.error(uploadError);
+    status.textContent="";
+    alert("Resume upload failed: "+uploadError.message);
+    input.value="";
+    return;
+  }
+
+  const {data:updateData,error:updateError}=await db.auth.updateUser({
+    data:{
+      resume_path:path,
+      resume_name:file.name
+    }
+  });
+
+  if(updateError){
+    console.error(updateError);
+    status.textContent="";
+    alert("Resume uploaded, but details could not be saved: "+updateError.message);
+    return;
+  }
+
+  currentUser=updateData.user||currentUser;
+  status.textContent="Resume uploaded successfully: "+file.name;
+  viewBtn.style.display="inline-block";
+  input.value="";
+
+  if(oldPath&&oldPath!==path){
+    await db.storage.from("resumes").remove([oldPath]);
+  }
+}
+
+async function viewResume(){
+  if(!currentUser){
+    alert("Session expired. Please login again.");
+    return;
+  }
+
+  const path=currentUser.user_metadata?.resume_path;
+  if(!path){
+    alert("No resume uploaded yet.");
+    return;
+  }
+
+  const {data,error}=await db.storage
+    .from("resumes")
+    .createSignedUrl(path,60*10);
+
+  if(error){
+    console.error(error);
+    alert("Resume view failed: "+error.message);
+    return;
+  }
+
+  window.open(data.signedUrl,"_blank");
+}
+
+
+async function deleteResume(){
+  if(!currentUser){
+    alert("Session expired. Please login again.");
+    return;
+  }
+
+  const path=currentUser.user_metadata?.resume_path;
+  const name=currentUser.user_metadata?.resume_name||"Resume.pdf";
+
+  if(!path){
+    alert("No resume uploaded yet.");
+    return;
+  }
+
+  if(!confirm("Delete "+name+"? This will permanently remove the resume from your account."))return;
+
+  const status=document.getElementById("resumeStatus");
+  const viewBtn=document.getElementById("viewResumeBtn");
+  const deleteBtn=document.getElementById("deleteResumeBtn");
+
+  if(status)status.textContent="Deleting resume...";
+  if(viewBtn)viewBtn.disabled=true;
+  if(deleteBtn)deleteBtn.disabled=true;
+
+  const {error:storageError}=await db.storage.from("resumes").remove([path]);
+
+  if(storageError){
+    console.error(storageError);
+    if(status)status.textContent="";
+    if(viewBtn)viewBtn.disabled=false;
+    if(deleteBtn)deleteBtn.disabled=false;
+    alert("Resume delete failed: "+storageError.message);
+    return;
+  }
+
+  const {data:updateData,error:updateError}=await db.auth.updateUser({
+    data:{resume_path:null,resume_name:null}
+  });
+
+  if(updateError){
+    console.error(updateError);
+    if(status)status.textContent="Resume file deleted, but account details could not be cleared.";
+    if(viewBtn)viewBtn.style.display="none";
+    if(deleteBtn)deleteBtn.style.display="none";
+    if(viewBtn)viewBtn.disabled=false;
+    if(deleteBtn)deleteBtn.disabled=false;
+    alert("Resume file deleted, but resume details could not be cleared: "+updateError.message);
+    return;
+  }
+
+  currentUser=updateData.user||currentUser;
+  if(viewBtn){viewBtn.style.display="none";viewBtn.disabled=false;}
+  if(deleteBtn){deleteBtn.style.display="none";deleteBtn.disabled=false;}
+  if(status)status.textContent="Resume deleted successfully.";
+}
+
+/* ==================================
+   DASHBOARD
+================================== */
+function renderApplications(){
+  const list=document.getElementById("applicationsList");
+  if(!list) return;
+  if(!applications.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><p>No applications yet</p><small>Click "Add Application" to get started.</small></div>`;
+    return;
+  }
+  list.innerHTML=applications.slice(0,6).map(app=>applicationHTML(app,false)).join("");
+}
+
+function renderReminders(){
+  const list=document.getElementById("remindersList");
+  if(!list) return;
+  const reminders=applications.filter(a=>a.followup).sort((a,b)=>new Date(a.followup)-new Date(b.followup)).slice(0,3);
+  if(!reminders.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">🔔</div><p>No upcoming reminders</p><small>Add a follow-up date.</small></div>`;
+    return;
+  }
+  list.innerHTML=reminders.map(app=>`<div class="reminder"><strong>🔔 ${escapeHTML(app.company)}</strong><p>${escapeHTML(app.role)}</p><p>📅 ${formatDate(app.followup)}</p></div>`).join("");
+}
+
+function updateStats(){
+  const total=applications.length;
+  const active=applications.filter(a=>["Applied","Shortlisted","Interview"].includes(a.status)).length;
+  const interviews=applications.filter(a=>a.status==="Interview").length;
+  const selected=applications.filter(a=>a.status==="Selected").length;
+  document.getElementById("total").textContent=total;
+  document.getElementById("active").textContent=active;
+  document.getElementById("interviews").textContent=interviews;
+  document.getElementById("selected").textContent=selected;
+  const target=20;
+  const percent=Math.min(Math.round((total/target)*100),100);
+  document.getElementById("goalText").textContent=`${total} / ${target}`;
+  document.getElementById("goalPercent").textContent=`${percent}%`;
+  document.getElementById("goalBar").style.width=`${percent}%`;
+}
+
+/* ==================================
+   MODAL
+================================== */
+function openModal(){
+  editingId=null;
+  document.getElementById("modalTitle").textContent="Add Application 🚀";
+  clearForm();
+  document.getElementById("modal").style.display="flex";
+}
+function closeModal(){document.getElementById("modal").style.display="none";}
+function clearForm(){
+  ["company","role","location","date","salary","followup","link","notes"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("type").value="Internship";
+  document.getElementById("status").value="Applied";
+}
+
+/* ==================================
+   SAVE TO SUPABASE
+================================== */
+async function saveApplication(){
+  if(!currentUser){alert("Session expired. Please login again.");return;}
+  const company=document.getElementById("company").value.trim();
+  const role=document.getElementById("role").value.trim();
+  if(!company||!role){alert("Please enter Company and Role.");return;}
+
+  const payload={
+    user_id:currentUser.id,
+    company,
+    role,
+    location:document.getElementById("location").value.trim(),
+    type:document.getElementById("type").value,
+    date:document.getElementById("date").value||null,
+    salary:document.getElementById("salary").value.trim(),
+    status:document.getElementById("status").value,
+    followup:document.getElementById("followup").value||null,
+    link:document.getElementById("link").value.trim(),
+    notes:document.getElementById("notes").value.trim()
+  };
+
+  const btn=document.querySelector('#modal .primary');
+  const old=btn.textContent;
+  btn.disabled=true;btn.textContent="Saving...";
+
+  let result;
+  if(editingId){
+    result=await db.from("applications").update(payload).eq("id",editingId).eq("user_id",currentUser.id).select().single();
+  }else{
+    result=await db.from("applications").insert(payload).select().single();
+  }
+
+  btn.disabled=false;btn.textContent=old;
+  if(result.error){
+    console.error(result.error);
+    alert("Save aagala: "+result.error.message);
+    return;
+  }
+  closeModal();
+  editingId=null;
+  await loadApplications();
+  renderDashboard();
+  refreshCurrentPage();
+}
+
+/* ==================================
+   EDIT
+================================== */
+function editApplication(id){
+  const app=applications.find(a=>String(a.id)===String(id));
+  if(!app)return;
+  editingId=app.id;
+  document.getElementById("modalTitle").textContent="Edit Application ✏️";
+  document.getElementById("company").value=app.company||"";
+  document.getElementById("role").value=app.role||"";
+  document.getElementById("location").value=app.location||"";
+  document.getElementById("type").value=app.type||"Internship";
+  document.getElementById("date").value=app.date||"";
+  document.getElementById("salary").value=app.salary||"";
+  document.getElementById("status").value=app.status||"Applied";
+  document.getElementById("followup").value=app.followup||"";
+  document.getElementById("link").value=app.link||"";
+  document.getElementById("notes").value=app.notes||"";
+  document.getElementById("modal").style.display="flex";
+}
+
+/* ==================================
+   DELETE FROM SUPABASE
+================================== */
+async function deleteApplication(id){
+  const app=applications.find(a=>String(a.id)===String(id));
+  if(!app)return;
+  if(!confirm(`Delete application for ${app.company}?`))return;
+  const {error}=await db.from("applications").delete().eq("id",id).eq("user_id",currentUser.id);
+  if(error){alert("Delete aagala: "+error.message);return;}
+  await loadApplications();
+  renderDashboard();
+  refreshCurrentPage();
+}
+
+function refreshCurrentPage(){
+  const active=document.querySelector(".nav.active");
+  if(!active)return;
+  const text=active.innerText.toLowerCase();
+  if(text.includes("application"))createApplicationsPage();
+  else if(text.includes("reminder"))createRemindersPage();
+  else if(text.includes("analytics"))createAnalyticsPage();
+  else if(text.includes("calendar"))createCalendarPage();
+  else if(text.includes("resume"))createResumePage();
+}
+
+/* ==================================
+   PROFILE
+================================== */
+function getLoggedInProfileDetails(){
+  const meta=currentUser?.user_metadata||{};
+  const name=meta.name||meta.full_name||profile?.name||profile?.full_name||currentUser?.email?.split("@")[0]||"User";
+  const phone=meta.phone||profile?.phone||"Not added";
+  const email=currentUser?.email||"-";
+  return {name,phone,email};
+}
+
+function updateProfileUI(){
+  const {name,phone,email}=getLoggedInProfileDetails();
+  const initial=(name.trim().charAt(0)||"U").toUpperCase();
+
+  const avatar=document.getElementById("userAvatar");
+  if(avatar)avatar.textContent=initial;
+  const sideName=document.getElementById("sideUserName");
+  if(sideName)sideName.textContent=name;
+  const sideEmail=document.getElementById("sideUserEmail");
+  if(sideEmail)sideEmail.textContent="✉️ "+email;
+  const sidePhone=document.getElementById("sideUserPhone");
+  if(sidePhone)sidePhone.textContent="📱 "+phone;
+}
+
+function viewProfile(){
+  updateProfileUI();
+  const {name,phone,email}=getLoggedInProfileDetails();
+  const initial=(name.trim().charAt(0)||"U").toUpperCase();
+  document.getElementById("profileAvatar").textContent=initial;
+  document.getElementById("profileName").textContent=name;
+  document.getElementById("profileEmail").textContent=email;
+  document.getElementById("profileNameDetail").textContent=name;
+  document.getElementById("profileEmailDetail").textContent=email;
+  document.getElementById("profilePhone").textContent=phone;
+  closeProfileEdit();
+  document.getElementById("profileModal").style.display="flex";
+}
+
+function openProfileEdit(){
+  const {name,phone,email}=getLoggedInProfileDetails();
+  document.getElementById("editProfileName").value=name==="User"?"":name;
+  document.getElementById("editProfilePhone").value=phone==="Not added"?"":phone;
+  document.getElementById("editProfileEmail").value=email||"";
+  document.getElementById("editProfilePassword").value="";
+  document.getElementById("profileEditStatus").textContent="";
+  document.getElementById("profileViewMode").style.display="none";
+  document.getElementById("profileEditForm").style.display="block";
+}
+
+function closeProfileEdit(){
+  const view=document.getElementById("profileViewMode");
+  const form=document.getElementById("profileEditForm");
+  if(view)view.style.display="block";
+  if(form)form.style.display="none";
+}
+
+async function saveProfileChanges(){
+  if(!currentUser){
+    alert("Session expired. Please login again.");
+    return;
+  }
+
+  const name=document.getElementById("editProfileName").value.trim();
+  const phone=document.getElementById("editProfilePhone").value.trim();
+  const email=document.getElementById("editProfileEmail").value.trim();
+  const password=document.getElementById("editProfilePassword").value;
+  const status=document.getElementById("profileEditStatus");
+  const btn=document.getElementById("profileSaveBtn");
+
+  if(!name){
+    alert("Please enter your name.");
+    return;
+  }
+  if(phone && !/^[+0-9][0-9 ()-]{7,18}$/.test(phone)){
+    alert("Please enter a valid phone number.");
+    return;
+  }
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert("Please enter a valid email address.");
+    return;
+  }
+  if(password && password.length<6){
+    alert("New password must be at least 6 characters.");
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent="Saving...";
+  status.textContent="Updating your profile...";
+
+  try{
+    const oldEmail=currentUser.email||"";
+    const metadata={
+      ...(currentUser.user_metadata||{}),
+      name,
+      full_name:name,
+      phone
+    };
+
+    const authPayload={data:metadata};
+    if(email && email!==oldEmail)authPayload.email=email;
+    if(password)authPayload.password=password;
+
+    const {data,error}=await db.auth.updateUser(authPayload);
+    if(error)throw error;
+
+    currentUser=data.user||currentUser;
+
+    // Keep the optional profiles table in sync when it exists.
+    // If this update is blocked/missing, Auth metadata still remains saved.
+    try{
+      const {error:profileError}=await db.from("profiles").upsert({
+        id:currentUser.id,
+        name,
+        full_name:name,
+        phone
+      },{onConflict:"id"});
+      if(profileError)console.warn("profiles table update skipped:",profileError.message);
+    }catch(e){
+      console.warn("profiles table update skipped:",e);
+    }
+
+    if(email && email!==oldEmail){
+      status.textContent="Profile saved. Check your new email for the confirmation link.";
+    }else if(password){
+      status.textContent="Profile and password updated successfully.";
+    }else{
+      status.textContent="Profile updated successfully.";
+    }
+
+    updateProfileUI();
+    const details=getLoggedInProfileDetails();
+    const initial=(details.name.trim().charAt(0)||"U").toUpperCase();
+    document.getElementById("profileAvatar").textContent=initial;
+    document.getElementById("profileName").textContent=details.name;
+    document.getElementById("profileEmail").textContent=details.email;
+    document.getElementById("profileNameDetail").textContent=details.name;
+    document.getElementById("profileEmailDetail").textContent=details.email;
+    document.getElementById("profilePhone").textContent=details.phone;
+
+    setTimeout(()=>closeProfileEdit(),1200);
+  }catch(error){
+    console.error(error);
+    status.textContent="";
+    alert("Profile update failed: "+error.message);
+  }finally{
+    btn.disabled=false;
+    btn.textContent="💾 Save Changes";
+  }
+}
+
+function closeProfile(){
+  const modal=document.getElementById("profileModal");
+  if(modal){
+    modal.style.display="none";
+    closeProfileEdit();
+  }
+}
+
+async function logout(){
+  const {error}=await db.auth.signOut();
+  if(error){alert(error.message);return;}
+  window.location.href="login.html";
+}
+
+/* ==================================
+   HELPERS
+================================== */
+function getBadgeClass(status){return status?(status.toLowerCase().replace(/\s/g,"")):"applied";}
+function formatDate(date){
+  if(!date)return "";
+  const d=new Date(date+"T00:00:00");
+  if(Number.isNaN(d.getTime()))return date;
+  return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+}
+function escapeHTML(value){
+  if(value===null||value===undefined)return "";
+  return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+
+/* ==================================
+   EVENTS
+================================== */
+document.getElementById("modal").addEventListener("click",function(e){if(e.target===this)closeModal();});
+const profileModal=document.getElementById("profileModal");
+if(profileModal)profileModal.addEventListener("click",function(e){if(e.target===this)closeProfile();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeModal();closeProfile();document.getElementById("sidebar").classList.remove("open");}});
+
+db.auth.onAuthStateChange((event,session)=>{
+  if(event==="SIGNED_OUT")window.location.href="login.html";
+});
+
+document.addEventListener("DOMContentLoaded",init);
+</script>
+
+</body>
+</html>

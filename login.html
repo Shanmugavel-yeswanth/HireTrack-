@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>HireTrack | Login</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Plus Jakarta Sans',sans-serif
+}
+
+:root{
+--green:#20b978;
+--green2:#55d98a;
+--dark:#087f5b;
+--mint:#dff9eb;
+--soft:#f3fcf7;
+--text:#18352b;
+--muted:#789187;
+--line:#dceee5;
+}
+
+body{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+color:var(--text);
+background:
+radial-gradient(circle at 8% 15%,#b8f2d066,transparent 28%),
+radial-gradient(circle at 92% 85%,#86e3a944,transparent 28%),
+linear-gradient(135deg,#f8fffb,#effbf5)
+}
+
+.container{
+width:100%;
+max-width:980px;
+min-height:600px;
+display:grid;
+grid-template-columns:1fr 1fr;
+overflow:hidden;
+border:1px solid rgba(255,255,255,.9);
+border-radius:32px;
+background:rgba(255,255,255,.76);
+backdrop-filter:blur(25px);
+box-shadow:
+0 30px 90px rgba(18,105,72,.14),
+0 5px 20px rgba(18,105,72,.06)
+}
+
+.hero{
+position:relative;
+overflow:hidden;
+padding:50px;
+color:white;
+background:
+linear-gradient(145deg,#087f5b,#20b978 52%,#73e29d)
+}
+
+.hero::before{
+content:"";
+position:absolute;
+width:330px;
+height:330px;
+border-radius:50%;
+right:-130px;
+top:-120px;
+background:rgba(255,255,255,.12)
+}
+
+.hero::after{
+content:"";
+position:absolute;
+width:250px;
+height:250px;
+border-radius:50%;
+left:-120px;
+bottom:-100px;
+background:rgba(255,255,255,.10)
+}
+
+.glow{
+position:absolute;
+width:150px;
+height:150px;
+border-radius:50%;
+background:rgba(255,255,255,.08);
+right:90px;
+bottom:80px;
+filter:blur(3px)
+}
+
+.logo{
+position:relative;
+z-index:2;
+font-size:28px;
+font-weight:800;
+letter-spacing:-1px
+}
+
+.logo span{
+color:#d9ffe9
+}
+
+.hero-content{
+position:relative;
+z-index:2;
+margin-top:105px
+}
+
+.hero-content .tag{
+display:inline-block;
+padding:7px 11px;
+border-radius:30px;
+background:rgba(255,255,255,.14);
+border:1px solid rgba(255,255,255,.18);
+font-size:11px;
+font-weight:700;
+margin-bottom:18px
+}
+
+.hero-content h1{
+font-size:41px;
+line-height:1.13;
+letter-spacing:-2px
+}
+
+.hero-content p{
+font-size:14px;
+line-height:1.75;
+margin-top:18px;
+max-width:370px;
+color:#edfff4
+}
+
+.features{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:30px
+}
+
+.feature{
+padding:11px;
+border-radius:13px;
+background:rgba(255,255,255,.10);
+border:1px solid rgba(255,255,255,.10);
+font-size:11px;
+font-weight:600
+}
+
+.form-area{
+padding:50px;
+display:flex;
+flex-direction:column;
+justify-content:center
+}
+
+.form-area h2{
+font-size:28px;
+letter-spacing:-1px
+}
+
+.subtitle{
+font-size:13px;
+color:var(--muted);
+margin-top:7px;
+margin-bottom:27px
+}
+
+.tabs{
+display:flex;
+gap:4px;
+padding:5px;
+border-radius:14px;
+background:#edf8f2;
+margin-bottom:23px
+}
+
+.tab{
+width:50%;
+padding:11px;
+border:0;
+border-radius:10px;
+background:transparent;
+color:#789187;
+font-weight:700;
+font-size:12px;
+cursor:pointer;
+transition:.25s
+}
+
+.tab.active{
+background:white;
+color:var(--dark);
+box-shadow:0 5px 15px rgba(20,100,70,.09)
+}
+
+.field{
+margin-bottom:15px
+}
+
+.field label{
+display:block;
+font-size:12px;
+font-weight:700;
+margin-bottom:7px;
+color:#3d574d
+}
+
+.input-wrap{
+position:relative
+}
+
+.input-wrap>span:first-child{
+position:absolute;
+left:14px;
+top:50%;
+transform:translateY(-50%);
+font-size:15px;
+z-index:2
+}
+
+input{
+width:100%;
+height:48px;
+padding:12px 43px;
+border:1px solid var(--line);
+border-radius:13px;
+outline:none;
+font-size:13px;
+color:var(--text);
+background:#fbfffd;
+transition:.25s
+}
+
+input::placeholder{
+color:#a3b6ad
+}
+
+input:focus{
+border-color:var(--green);
+background:white;
+box-shadow:0 0 0 4px rgba(32,185,120,.10)
+}
+
+.password-toggle{
+position:absolute;
+right:7px;
+top:50%;
+transform:translateY(-50%);
+width:35px;
+height:35px;
+border:0;
+border-radius:9px;
+background:transparent;
+cursor:pointer;
+font-size:15px;
+z-index:5
+}
+
+.password-toggle:hover{
+background:var(--mint)
+}
+
+.options{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:11px;
+margin:4px 0 20px
+}
+
+.remember{
+display:flex;
+align-items:center;
+gap:6px
+}
+
+.remember input{
+width:auto;
+height:auto;
+accent-color:var(--green)
+}
+
+.options a{
+color:var(--dark);
+font-weight:700;
+text-decoration:none
+}
+
+.submit{
+width:100%;
+height:48px;
+border:0;
+border-radius:13px;
+background:linear-gradient(135deg,#087f5b,#20b978,#55d98a);
+background-size:200% 200%;
+color:white;
+font-size:13px;
+font-weight:800;
+cursor:pointer;
+box-shadow:0 12px 25px rgba(32,185,120,.23);
+transition:.3s
+}
+
+.submit:hover{
+transform:translateY(-2px);
+background-position:100% 50%;
+box-shadow:0 16px 30px rgba(32,185,120,.32)
+}
+
+.submit:disabled{
+opacity:.7;
+cursor:not-allowed;
+transform:none
+}
+
+.divider{
+display:flex;
+align-items:center;
+gap:10px;
+margin:20px 0;
+font-size:10px;
+color:#a0afa8
+}
+
+.divider::before,
+.divider::after{
+content:"";
+height:1px;
+background:var(--line);
+flex:1
+}
+
+.google{
+width:100%;
+height:45px;
+border:1px solid var(--line);
+border-radius:13px;
+background:white;
+color:#456057;
+font-size:12px;
+font-weight:700;
+cursor:pointer;
+transition:.2s
+}
+
+.google:hover{
+border-color:#a9dfc1;
+background:#f8fffb
+}
+
+.message{
+font-size:11px;
+text-align:center;
+margin-top:14px;
+min-height:17px
+}
+
+@media(max-width:750px){
+
+.container{
+display:block;
+max-width:500px;
+min-height:auto
+}
+
+.hero{
+display:none
+}
+
+.form-area{
+padding:38px 28px
+}
+
+}
+
+@media(max-width:400px){
+
+body{
+padding:12px
+}
+
+.form-area{
+padding:30px 20px
+}
+
+.form-area h2{
+font-size:24px
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="hero">
+
+<div class="logo">
+Hire<span>Track</span>
+</div>
+
+<div class="hero-content">
+
+<div class="tag">
+YOUR CAREER COMPANION ✦
+</div>
+
+<h1>
+Build your career.<br>
+Track every step.
+</h1>
+
+<p>
+Organize your job and internship applications,
+follow your progress and stay ready for your next
+career opportunity.
+</p>
+
+<div class="features">
+
+<div class="feature">
+✓ Application Tracking
+</div>
+
+<div class="feature">
+✓ Interview Management
+</div>
+
+<div class="feature">
+✓ Smart Reminders
+</div>
+
+<div class="feature">
+✓ Career Analytics
+</div>
+
+</div>
+
+</div>
+
+<div class="glow"></div>
+
+</section>
+
+
+<section class="form-area">
+
+<h2 id="formTitle">
+Welcome back 👋
+</h2>
+
+<p class="subtitle" id="formSubtitle">
+Login to continue to your HireTrack dashboard.
+</p>
+
+
+<div class="tabs">
+
+<button
+type="button"
+class="tab active"
+id="loginTab"
+onclick="showLogin()">
+
+Login
+
+</button>
+
+<button
+type="button"
+class="tab"
+id="signupTab"
+onclick="showSignup()">
+
+Create Account
+
+</button>
+
+</div>
+
+
+<form id="authForm">
+
+
+<!-- NAME -->
+
+<div
+class="field"
+id="nameField"
+style="display:none">
+
+<label>
+Your Name
+</label>
+
+<div class="input-wrap">
+
+<span>👤</span>
+
+<input
+id="name"
+type="text"
+placeholder="Enter your name"
+autocomplete="name">
+
+</div>
+
+</div>
+
+
+<!-- PHONE -->
+
+<div
+class="field"
+id="phoneField"
+style="display:none">
+
+<label>
+Phone Number
+</label>
+
+<div class="input-wrap">
+
+<span>📱</span>
+
+<input
+id="phone"
+type="tel"
+placeholder="Enter phone number"
+autocomplete="tel"
+inputmode="numeric"
+maxlength="10">
+
+</div>
+
+</div>
+
+
+<!-- EMAIL -->
+
+<div class="field">
+
+<label>
+Email Address
+</label>
+
+<div class="input-wrap">
+
+<span>📧</span>
+
+<input
+id="email"
+type="email"
+placeholder="you@example.com"
+autocomplete="email"
+required>
+
+</div>
+
+</div>
+
+
+<!-- PASSWORD -->
+
+<div class="field">
+
+<label>
+Password
+</label>
+
+<div class="input-wrap">
+
+<span>🔒</span>
+
+<input
+id="password"
+type="password"
+placeholder="Enter password"
+autocomplete="current-password"
+required>
+
+<button
+type="button"
+class="password-toggle"
+onclick="togglePassword()">
+
+👁️
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- LOGIN OPTIONS -->
+
+<div
+class="options"
+id="loginOptions">
+
+<label class="remember">
+
+<input
+type="checkbox"
+id="rememberMe">
+
+Remember me
+
+</label>
+
+<a
+href="#"
+onclick="forgotPassword(event)">
+
+Forgot password?
+
+</a>
+
+</div>
+
+
+<button
+type="submit"
+class="submit"
+id="submitBtn">
+
+Login to HireTrack →
+
+</button>
+
+</form>
+
+
+<div class="divider">
+OR
+</div>
+
+
+<button
+type="button"
+class="google"
+onclick="googleLogin()">
+
+🌐 &nbsp; Continue with Google
+
+</button>
+
+
+<div
+class="message"
+id="message">
+</div>
+
+</section>
+
+</div>
+
+
+<!-- SUPABASE LIBRARY -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<script>
+
+/* ==========================================
+   SUPABASE CONFIG
+========================================== */
+
+const SUPABASE_URL =
+"https://mfbksvxvwujafacxpzqh.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mYmtzdnh2d3VqYWZhY3hwenFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4OTQxNjIsImV4cCI6MjEwNTQ3MDE2Mn0.z3p1cJd04o9vLYWaJPaY9-08klfaUT8nbWeV92QyAnM";
+
+
+const db =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+
+/* ==========================================
+   MODE
+========================================== */
+
+let mode = "login";
+
+
+/* ==========================================
+   ELEMENTS
+========================================== */
+
+const form =
+document.getElementById("authForm");
+
+const message =
+document.getElementById("message");
+
+const button =
+document.getElementById("submitBtn");
+
+
+/* ==========================================
+   SHOW LOGIN
+========================================== */
+
+function showLogin(){
+
+mode = "login";
+
+document
+.getElementById("loginTab")
+.classList.add("active");
+
+document
+.getElementById("signupTab")
+.classList.remove("active");
+
+document
+.getElementById("nameField")
+.style.display = "none";
+
+document
+.getElementById("phoneField")
+.style.display = "none";
+
+document
+.getElementById("loginOptions")
+.style.display = "flex";
+
+document
+.getElementById("formTitle")
+.innerText =
+"Welcome back 👋";
+
+document
+.getElementById("formSubtitle")
+.innerText =
+"Login to continue to your HireTrack dashboard.";
+
+button.innerText =
+"Login to HireTrack →";
+
+message.innerText = "";
+
+document
+.getElementById("password")
+.autocomplete =
+"current-password";
+
+}
+
+
+/* ==========================================
+   SHOW SIGNUP
+========================================== */
+
+function showSignup(){
+
+mode = "signup";
+
+document
+.getElementById("signupTab")
+.classList.add("active");
+
+document
+.getElementById("loginTab")
+.classList.remove("active");
+
+document
+.getElementById("nameField")
+.style.display = "block";
+
+document
+.getElementById("phoneField")
+.style.display = "block";
+
+document
+.getElementById("loginOptions")
+.style.display = "none";
+
+document
+.getElementById("formTitle")
+.innerText =
+"Create your account 🚀";
+
+document
+.getElementById("formSubtitle")
+.innerText =
+"Start managing your career journey today.";
+
+button.innerText =
+"Create Account →";
+
+message.innerText = "";
+
+document
+.getElementById("password")
+.autocomplete =
+"new-password";
+
+}
+
+
+/* ==========================================
+   PASSWORD TOGGLE
+========================================== */
+
+function togglePassword(){
+
+const password =
+document.getElementById("password");
+
+if(password.type === "password"){
+
+password.type = "text";
+
+}
+else{
+
+password.type = "password";
+
+}
+
+}
+
+
+/* ==========================================
+   PHONE VALIDATION
+========================================== */
+
+function validPhone(phone){
+
+return /^[0-9]{10}$/.test(phone);
+
+}
+
+
+
+/* ==========================================
+   PROFILE TABLE SYNC
+========================================== */
+
+async function syncProfile(user, name, phone){
+
+if(!user) return;
+
+const profileData = {
+  id:user.id,
+  name:name || user.user_metadata?.name || "",
+  phone:phone || user.user_metadata?.phone || null
+};
+
+const {error} = await db
+.from("profiles")
+.upsert(profileData,{onConflict:"id"});
+
+if(error){
+  console.warn("Profile table sync:",error.message);
+}
+
+}
+
+
+/* ==========================================
+   FORM SUBMIT
+========================================== */
+
+form.addEventListener(
+"submit",
+handleSubmit
+);
+
+
+async function handleSubmit(event){
+
+event.preventDefault();
+
+
+const name =
+document
+.getElementById("name")
+.value
+.trim();
+
+
+const phone =
+document
+.getElementById("phone")
+.value
+.trim();
+
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+
+const password =
+document
+.getElementById("password")
+.value;
+
+
+message.innerText = "";
+
+button.disabled = true;
+
+
+try{
+
+
+/* ==========================================
+   SIGNUP
+========================================== */
+
+if(mode === "signup"){
+
+
+if(!name){
+
+throw new Error(
+"Please enter your name."
+);
+
+}
+
+
+if(!phone){
+
+throw new Error(
+"Please enter your phone number."
+);
+
+}
+
+
+if(!validPhone(phone)){
+
+throw new Error(
+"Enter a valid 10-digit phone number."
+);
+
+}
+
+
+if(password.length < 6){
+
+throw new Error(
+"Password must be at least 6 characters."
+);
+
+}
+
+
+button.innerText =
+"Creating account...";
+
+
+const result =
+await db.auth.signUp({
+
+email:email,
+
+password:password,
+
+options:{
+data:{
+name:name,
+phone:phone
+}
+}
+
+});
+
+
+if(result.error){
+
+throw result.error;
+
+}
+
+
+if(!result.data.user){
+
+throw new Error(
+"Account could not be created."
+);
+
+}
+
+/*
+   Auth stores name + phone in user_metadata.
+   If email confirmation is disabled and a session
+   is returned, also sync the public profiles table.
+*/
+if(result.data.session){
+
+await syncProfile(
+  result.data.user,
+  name,
+  phone
+);
+
+message.style.color =
+"#087f5b";
+
+message.innerText =
+"Account created successfully!";
+
+setTimeout(function(){
+
+window.location.href =
+"index.html";
+
+},800);
+
+}
+
+else{
+
+message.style.color =
+"#087f5b";
+
+message.innerText =
+"Account created! Check your email to verify your account.";
+
+}
+
+}
+
+
+/* ==========================================
+   LOGIN
+========================================== */
+
+else{
+
+
+button.innerText =
+"Logging in...";
+
+
+const result =
+await db.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+
+if(result.error){
+
+throw result.error;
+
+}
+
+
+if(result.data.user){
+
+/* Keep profiles table synced after login. */
+await syncProfile(
+  result.data.user,
+  result.data.user.user_metadata?.name || "",
+  result.data.user.user_metadata?.phone || ""
+);
+
+message.style.color =
+"#087f5b";
+
+message.innerText =
+"Login successful!";
+
+
+setTimeout(function(){
+
+window.location.href =
+"index.html";
+
+},500);
+
+}
+
+}
+
+}
+
+
+/* ==========================================
+   ERROR
+========================================== */
+
+catch(error){
+
+console.error(
+"AUTH ERROR:",
+error
+);
+
+message.style.color =
+"#ef476f";
+
+
+const errorMessage =
+error.message || "";
+
+
+if(
+errorMessage.includes(
+"Invalid login credentials"
+)
+){
+
+message.innerText =
+"Invalid email or password.";
+
+}
+
+else if(
+errorMessage.includes(
+"User already registered"
+)
+){
+
+message.innerText =
+"This email is already registered.";
+
+}
+
+else if(
+errorMessage.includes(
+"Email not confirmed"
+)
+){
+
+message.innerText =
+"Please verify your email first.";
+
+}
+
+else if(
+errorMessage.includes(
+"Password should be at least"
+)
+){
+
+message.innerText =
+"Password must be at least 6 characters.";
+
+}
+
+else{
+
+message.innerText =
+errorMessage ||
+"Something went wrong.";
+
+}
+
+}
+
+
+/* ==========================================
+   RESET BUTTON
+========================================== */
+
+button.disabled = false;
+
+
+if(mode === "login"){
+
+button.innerText =
+"Login to HireTrack →";
+
+}
+else{
+
+button.innerText =
+"Create Account →";
+
+}
+
+}
+
+
+/* ==========================================
+   FORGOT PASSWORD
+========================================== */
+
+async function forgotPassword(event){
+
+event.preventDefault();
+
+
+const email =
+document
+.getElementById("email")
+.value
+.trim();
+
+
+if(!email){
+
+message.style.color =
+"#ef476f";
+
+message.innerText =
+"Enter your email first.";
+
+return;
+
+}
+
+
+message.style.color =
+"#087f5b";
+
+message.innerText =
+"Sending reset email...";
+
+
+const result =
+await db.auth.resetPasswordForEmail(
+email,
+{
+redirectTo:
+window.location.origin +
+"/login.html"
+}
+);
+
+
+if(result.error){
+
+message.style.color =
+"#ef476f";
+
+message.innerText =
+result.error.message;
+
+return;
+
+}
+
+
+message.style.color =
+"#087f5b";
+
+message.innerText =
+"Password reset email sent! Check your inbox.";
+
+}
+
+
+/* ==========================================
+   GOOGLE LOGIN
+========================================== */
+
+async function googleLogin(){
+
+message.style.color =
+"#087f5b";
+
+message.innerText =
+"Opening Google login...";
+
+
+const result =
+await db.auth.signInWithOAuth({
+
+provider:"google",
+
+options:{
+redirectTo:
+window.location.origin +
+"/index.html"
+}
+
+});
+
+
+if(result.error){
+
+message.style.color =
+"#ef476f";
+
+message.innerText =
+result.error.message;
+
+}
+
+}
+
+
+</script>
+
+</body>
+</html>
